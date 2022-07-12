@@ -1,4 +1,4 @@
-partitioning=gd # gd or qt
+partitioning=qt # gd or qt
 method=bf # bf or ps
 K=10
 N=10

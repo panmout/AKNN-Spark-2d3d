@@ -89,7 +89,7 @@ public class Main
 	    System.out.println("Input arguments: \n" + arguments);
 	    
 	    // Spark conf
-	  	SparkConf sparkConf = new SparkConf().setAppName("aknn-spark").setMaster(String.format("spark://%s:7077", nameNode)); //("local[*]");
+	  	SparkConf sparkConf = new SparkConf().setAppName("aknn-spark-2d3d").setMaster(String.format("spark://%s:7077", nameNode)); //("local[*]");
 		JavaSparkContext jsc = new JavaSparkContext(sparkConf);
 		
 		// Hadoop FS

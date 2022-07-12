@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>gr.uth.ece.dsel</groupId>
-  <artifactId>aknn3d-spark</artifactId>
+  <artifactId>aknn-spark-2d3d</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
   <name>spark</name>

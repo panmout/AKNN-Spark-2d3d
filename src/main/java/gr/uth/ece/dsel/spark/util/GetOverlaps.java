@@ -56,6 +56,8 @@ public final class GetOverlaps implements Function<Tuple2<String, ArrayList<Tupl
 			this.neighbors.clear();
 			//reset list status
 			this.listComplete = false;
+			// set 2d as default
+			this.is3d = false;
 			
 			Point qpoint = tuple._1; // get qpoint
 			this.neighbors.addAll(tuple._2); // get its neighbor list
@@ -192,15 +194,11 @@ public final class GetOverlaps implements Function<Tuple2<String, ArrayList<Tupl
     	final double ds = 1.0 / this.N; // interval ds (cell width)
     	final int intQCell = Integer.parseInt(qcell); // get int value of query point cell
     	final int iq = intQCell % this.N; // get i
-    	final int jq = (intQCell - iq) / this.N; // get j
+    	final int jq = !this.is3d ? (intQCell - iq) / this.N : ((intQCell - iq) / this.N) % this.N; // get j (2d/3d)
+    	final int kq = !this.is3d ? 0 : ((intQCell - iq) / this.N - jq) / this.N; // get k (0 for 2d)
     	//final int iq = (int) (xq / ds); // get i
     	//final int jq = (int) (yq / ds); // get j
     	//final int intQCell = jq * this.N + iq; // calculate int cell_id
-    	
-    	// 3d case
-    	int kq = 0;
-    	if (this.is3d)
-    		kq = ((intQCell - iq) / this.N - jq) / this.N; // get k
     	
     	// if neighbors list not empty, set circle radius R to the distance of farthest neighbor
     	// else half the cell width
