@@ -42,10 +42,10 @@ public final class PsNeighbors implements Function<Tuple2<Iterable<Point>, Itera
 	    Collections.sort(this.qpoints, new PointXYComparator("min", 'x'));
 	 	Collections.sort(this.tpoints, new PointXYComparator("min", 'x'));
 	 	
-	 	if (!this.tpoints.isEmpty()) // if this cell has any tpoints
+		 // traverse query points
+		for (Point qpoint: this.qpoints)
 	 	{
-		 	// traverse query points
-	 		for (Point qpoint: this.qpoints)
+  			if (!this.tpoints.isEmpty()) // if this cell has any tpoints
 	 		{
 	 			// get pqpoint's x
 	 			final double xq = qpoint.getX();
@@ -90,11 +90,11 @@ public final class PsNeighbors implements Function<Tuple2<Iterable<Point>, Itera
 				if (check_left)
 					while (high >= 0 && cont_search == true) // scanning for neighbors to the left of tindex
 						cont_search = getPsNeighbors(qpoint, high--);
-		    	
-				this.qpoint_neighbors.add(new Tuple2<Point, PriorityQueue<IdDist>>(qpoint, new PriorityQueue<IdDist>(this.neighbors)));
-				this.neighbors.clear();
-	 		} // end query points traverse
-	 	}
+	 		} // end empty tpoints check
+  			
+ 			this.qpoint_neighbors.add(new Tuple2<Point, PriorityQueue<IdDist>>(qpoint, new PriorityQueue<IdDist>(this.neighbors)));
+			this.neighbors.clear();
+	 	} // end query points traverse
  		
  		// return <list of qpoints with their neighbor list>
 	    return new ArrayList<Tuple2<Point, PriorityQueue<IdDist>>>(this.qpoint_neighbors);

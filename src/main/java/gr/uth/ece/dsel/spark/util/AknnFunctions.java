@@ -146,7 +146,7 @@ public final class AknnFunctions
 //		return pointToCellQT((node.getXmin() + node.getXmax()) / 2, (node.getYmin() + node.getYmax()) / 2, node);
 //	}
 	
-	// point to QT cell
+	// point to QT cell 2d
 	public static final String pointToCellQT (double x, double y, Node node)
 	{
 		// define x, y
@@ -186,22 +186,23 @@ public final class AknnFunctions
 		return new String("");
 	}
 	
-	public static String pointToCellQT (double x, double y, double z, Node node3d)
+	// point to QT cell 3d
+	public static String pointToCellQT (double x, double y, double z, Node node)
 	{
 		// define x, y, z
-		double xmin = node3d.getXmin();
-		double xmax = node3d.getXmax();
+		double xmin = node.getXmin();
+		double xmax = node.getXmax();
 		double xmid = (xmin + xmax) / 2;
 		
-		double ymin = node3d.getYmin();
-		double ymax = node3d.getYmax();
+		double ymin = node.getYmin();
+		double ymax = node.getYmax();
 		double ymid = (ymin + ymax) / 2;
 		
-		double zmin = node3d.getZmin();
-		double zmax = node3d.getZmax();
+		double zmin = node.getZmin();
+		double zmax = node.getZmax();
 		double zmid = (zmin + zmax) / 2;
 		
-		if (node3d.getFNW() != null)
+		if (node.getFNW() != null)
 		{
 			if (x >= xmin && x < xmid) // point inside SW or NW (Floor or Ceiling)
 			{
@@ -209,22 +210,22 @@ public final class AknnFunctions
 				{
 					if (z >= zmin && z < zmid) // point inside FSW
 					{
-						return "2" + pointToCellQT(x, y, z, node3d.getFSW());
+						return "2" + pointToCellQT(x, y, z, node.getFSW());
 					}
 					else if (z >= zmid && z < zmax) // point inside CSW
 					{
-						return "6" + pointToCellQT(x, y, z, node3d.getCSW());
+						return "6" + pointToCellQT(x, y, z, node.getCSW());
 					}						
 				}
 				else if (y >= ymid && y < ymax) // point inside NW (Floor or Ceiling)
 				{
 					if (z >= zmin && z < zmid) // point inside FNW
 					{
-						return "0" + pointToCellQT(x, y, z, node3d.getFNW());
+						return "0" + pointToCellQT(x, y, z, node.getFNW());
 					}
 					else if (z >= zmid && z < zmax) // point inside CNW
 					{
-						return "4" + pointToCellQT(x, y, z, node3d.getCNW());
+						return "4" + pointToCellQT(x, y, z, node.getCNW());
 					}	
 				}
 			}
@@ -234,22 +235,22 @@ public final class AknnFunctions
 				{
 					if (z >= zmin && z < zmid) // point inside FSE
 					{
-						return "3" + pointToCellQT(x, y, z, node3d.getFSE());
+						return "3" + pointToCellQT(x, y, z, node.getFSE());
 					}
 					else if (z >= zmid && z < zmax) // point inside CSE
 					{
-						return "7" + pointToCellQT(x, y, z, node3d.getCSE());
+						return "7" + pointToCellQT(x, y, z, node.getCSE());
 					}
 				}
 				else if (y >= ymid && y < ymax) // point inside NE (Floor or Ceiling)
 				{
 					if (z >= zmin && z < zmid) // point inside FNE
 					{
-						return "1" + pointToCellQT(x, y, z, node3d.getFNE());
+						return "1" + pointToCellQT(x, y, z, node.getFNE());
 					}
 					else if (z >= zmid && z < zmax) // point inside CNE
 					{
-						return "5" + pointToCellQT(x, y, z, node3d.getCNE());
+						return "5" + pointToCellQT(x, y, z, node.getCNE());
 					}
 				}
 			}

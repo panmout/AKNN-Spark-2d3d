@@ -124,11 +124,11 @@ public class Main
 	  	
 	  	//create query and training point RDDs
 	  	JavaRDD<Point> qpointsRDD = jsc.textFile(queryFile, partitions)
-	  								   .map(new NewPoint("\t")) // map a line <id, x, y> to a point object with neighbors list and boolean status
+	  								   .map(line -> AknnFunctions.newPoint(line, "\t")) // map a line <id, x, y> to a point object with neighbors list and boolean status
 	  								   .persist(StorageLevel.MEMORY_AND_DISK());
 	  	
 	  	JavaRDD<Point> tpointsRDD = jsc.textFile(trainingFile, partitions)
-	  								   .map(new NewPoint("\t")) // map a line <id, x, y> to a point object
+	  								   .map(line -> AknnFunctions.newPoint(line, "\t")) // map a line <id, x, y> to a point object
 	  								   .persist(StorageLevel.MEMORY_AND_DISK());
 	  	
 	  	/*
@@ -332,7 +332,7 @@ public class Main
 	    
 	    StringBuilder sb = new StringBuilder();
 	    
-	    List<Tuple2<Integer, PriorityQueue<IdDist>>> finalNeighbors = finalNeighborsRDD.take(100);
+	    List<Tuple2<Integer, PriorityQueue<IdDist>>> finalNeighbors = finalNeighborsRDD.take(1000);
 	    
 	    for (Tuple2<Integer, PriorityQueue<IdDist>> tuple : finalNeighbors)
 	    	sb.append(String.format("%d\t%s\n", tuple._1, AknnFunctions.pqToString(tuple._2, K, "min")));
