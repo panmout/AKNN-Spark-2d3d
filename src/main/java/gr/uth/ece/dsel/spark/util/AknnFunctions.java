@@ -65,8 +65,7 @@ public final class AknnFunctions
 			throw new IllegalArgumentException();
 	}
 	
-	/* 
-		
+	/*
 	Cell array (numbers inside cells are cell_id)
 
 	    n*ds |---------|----------|----------|----------|----------|----------|--------------|

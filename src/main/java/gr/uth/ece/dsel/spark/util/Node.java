@@ -11,7 +11,7 @@ public final class Node implements Serializable
 	private double xmin, xmax, ymin, ymax, zmin, zmax; // node boundaries
 	private HashSet<Integer> contPoints = new HashSet<Integer>(); // points contained
 	
-	// constructor
+	// 2d constructor
 	public Node (double xmin, double ymin, double xmax, double ymax)
 	{
 		this.xmin = xmin;
@@ -20,7 +20,7 @@ public final class Node implements Serializable
 		this.ymax = ymax;
 	}
 	
-	// constructor
+	// 3d constructor
 	public Node (double xmin, double ymin, double xmax, double ymax, double zmin, double zmax)
 	{
 		// The node will be defined using the coordinates of two opposite corners
@@ -54,7 +54,6 @@ public final class Node implements Serializable
 		this.high = high;
 	}
 	*/
-	
 	// 2d set-get
 	public final double getXmin()
 	{
