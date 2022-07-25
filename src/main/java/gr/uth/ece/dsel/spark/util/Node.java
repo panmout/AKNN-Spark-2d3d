@@ -21,7 +21,7 @@ public final class Node implements Serializable
 	}
 	
 	// 3d constructor
-	public Node (double xmin, double ymin, double xmax, double ymax, double zmin, double zmax)
+	public Node (double xmin, double ymin, double zmin, double xmax, double ymax, double zmax)
 	{
 		// The node will be defined using the coordinates of two opposite corners
 		// Floor South West (xmin, ymin, zmin) and
