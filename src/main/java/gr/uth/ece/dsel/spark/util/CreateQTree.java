@@ -33,17 +33,17 @@ public final class CreateQTree
 	
 	public CreateQTree(int newCapacity, String newTreeFilePath, String newTreeFileName, String newTrainingDatasetPath, int newSamplerate)
 	{
-		capacity = newCapacity;
-		treeFilePath = newTreeFilePath;
-		treeFileName = newTreeFileName;
-		trainingDatasetPath = newTrainingDatasetPath;
-		samplerate = newSamplerate;
+		this.capacity = newCapacity;
+		this.treeFilePath = newTreeFilePath;
+		this.treeFileName = newTreeFileName;
+		this.trainingDatasetPath = newTrainingDatasetPath;
+		this.samplerate = newSamplerate;
 	}
 	
 	// create root node (maximum capacity method)
 	private final Node createQT(Node node)
 	{
-		if (node.getContPoints().size() > capacity)
+		if (node.getContPoints().size() > this.capacity)
 		{
 			node = createChildren(node);
 			
@@ -73,13 +73,13 @@ public final class CreateQTree
 	// create root node (all children split method)
 	private final Node createQT(Node node, boolean force)
 	{
-		if (node.getContPoints().size() > capacity || (force == true))
+		if (node.getContPoints().size() > this.capacity || (force == true))
 		{
 			int nodeNumPoints = node.getContPoints().size();
 			
 			node = createChildren(node);
 			
-			if (nodeNumPoints <= capacity)
+			if (nodeNumPoints <= this.capacity)
 			{
 				if (!this.is3d) // 2d case
 				{
@@ -107,13 +107,13 @@ public final class CreateQTree
 				
 				if (!this.is3d) // 2d case
 				{
-					if (node.getNW().getContPoints().size() > capacity)
+					if (node.getNW().getContPoints().size() > this.capacity)
 						force = true;
-					if (node.getNE().getContPoints().size() > capacity)
+					if (node.getNE().getContPoints().size() > this.capacity)
 						force = true;
-					if (node.getSW().getContPoints().size() > capacity)
+					if (node.getSW().getContPoints().size() > this.capacity)
 						force = true;
-					if (node.getSE().getContPoints().size() > capacity)
+					if (node.getSE().getContPoints().size() > this.capacity)
 						force = true;
 					
 					node.setNW(createQT(node.getNW(), force));
@@ -123,22 +123,22 @@ public final class CreateQTree
 				}
 				else if (this.is3d) // 3d case
 				{
-					if (node.getCNW().getContPoints().size() > capacity)
+					if (node.getCNW().getContPoints().size() > this.capacity)
 						force = true;
-					if (node.getCNE().getContPoints().size() > capacity)
+					if (node.getCNE().getContPoints().size() > this.capacity)
 						force = true;
-					if (node.getCSW().getContPoints().size() > capacity)
+					if (node.getCSW().getContPoints().size() > this.capacity)
 						force = true;
-					if (node.getCSE().getContPoints().size() > capacity)
+					if (node.getCSE().getContPoints().size() > this.capacity)
 						force = true;
 					
-					if (node.getFNW().getContPoints().size() > capacity)
+					if (node.getFNW().getContPoints().size() > this.capacity)
 						force = true;
-					if (node.getFNE().getContPoints().size() > capacity)
+					if (node.getFNE().getContPoints().size() > this.capacity)
 						force = true;
-					if (node.getFSW().getContPoints().size() > capacity)
+					if (node.getFSW().getContPoints().size() > this.capacity)
 						force = true;
-					if (node.getFSE().getContPoints().size() > capacity)
+					if (node.getFSE().getContPoints().size() > this.capacity)
 						force = true;
 					
 					node.setCNW(createQT(node.getCNW(), force));
@@ -159,7 +159,7 @@ public final class CreateQTree
 	// create root node (average width split method)
 	private final Node createQT(Node node, double avgWidth)
 	{
-		if ((node.getContPoints().size() > capacity) || (node.getXmax() - node.getXmin() > avgWidth)) // divide node only if it has many points or is bigger than average size
+		if ((node.getContPoints().size() > this.capacity) || (node.getXmax() - node.getXmin() > avgWidth)) // divide node only if it has many points or is bigger than average size
 		{
 			node = createChildren(node);
 			
@@ -211,7 +211,7 @@ public final class CreateQTree
 			while (iterator.hasNext()) // while set has elements
 			{
 				int pid = iterator.next();
-				Double[] coords = sample_dataset.get(pid);
+				Double[] coords = this.sample_dataset.get(pid);
 				double x = coords[0];
 				double y = coords[1];
 				if (x >= xmin && x < xmid) // point inside SW or NW
@@ -232,7 +232,7 @@ public final class CreateQTree
 				node.removePoint(pid); // remove point from parent node
 			}
 		}
-		else if (is3d) // 3d case
+		else if (this.is3d) // 3d case
 		{
 			// define z
 			double zmin = node.getZmin();
@@ -262,7 +262,7 @@ public final class CreateQTree
 			while (iterator.hasNext()) // while set has elements
 			{
 				int pid = iterator.next();
-				Double[] coords = sample_dataset.get(pid);
+				Double[] coords = this.sample_dataset.get(pid);
 				double x = coords[0];
 				double y = coords[1];
 				double z = coords[2];
@@ -310,24 +310,34 @@ public final class CreateQTree
 	
 	private final void df_repr(Node node) // create qtree in string form
 	{
-		if (node.getNW() == null && node.getCNW() == null)
+		if (!this.is3d) // 2d case
 		{
-			x = x.concat("0");
-			numCells++;
-		}
-		else
-		{
-			x = x.concat("1");
-			
-			if (!this.is3d) // 2d case
+			if (node.getNW() == null)
 			{
+				this.x = this.x.concat("0");
+				this.numCells++;
+			}
+			else
+			{
+				this.x = this.x.concat("1");
+				
 				df_repr(node.getNW());
 				df_repr(node.getNE());
 				df_repr(node.getSW());
 				df_repr(node.getSE());
 			}
-			else if (this.is3d) // 3d case
+		}
+		else if (this.is3d) // 3d case
+		{
+			if (node.getCNW() == null)
 			{
+				this.x = this.x.concat("0");
+				this.numCells++;
+			}
+			else
+			{
+				this.x = this.x.concat("1");
+				
 				df_repr(node.getFNW());
 				df_repr(node.getFNE());
 				df_repr(node.getFSW());
@@ -344,8 +354,8 @@ public final class CreateQTree
 	// get leaves widths
 	private final void getWidths(Node node)
 	{		
-		if (node.getNW() == null && node.getCNW() == null)
-			widths.add(node.getXmax() - node.getXmin());
+		if (node.getNW() == null || node.getCNW() == null)
+			this.widths.add(node.getXmax() - node.getXmin());
 		else
 		{
 			if (!this.is3d) // 2d case
@@ -374,21 +384,21 @@ public final class CreateQTree
 	{
 		try // open files
 		{
-			fileout = new FileOutputStream(treeFileName);
-			outputObjectFile = new ObjectOutputStream(fileout); // open local output object file
-			outputTextFile = new Formatter("qtree.txt"); // open local output text file
+			this.fileout = new FileOutputStream(this.treeFileName);
+			this.outputObjectFile = new ObjectOutputStream(this.fileout); // open local output object file
+			this.outputTextFile = new Formatter("qtree.txt"); // open local output text file
 			
 			FileSystem fs = FileSystem.get(new Configuration());
-			Path trainingPath = new Path(trainingDatasetPath);
+			Path trainingPath = new Path(this.trainingDatasetPath);
 			BufferedReader trainingBr = new BufferedReader(new InputStreamReader(fs.open(trainingPath))); // open HDFS training dataset file
 			
-			sample_dataset = new HashMap<Integer, Double[]>();
+			this.sample_dataset = new HashMap<Integer, Double[]>();
 			
-			HashSet<Integer> randomNumbers = new HashSet<Integer>(samplerate); // [percentSample] size set for random integers
+			HashSet<Integer> randomNumbers = new HashSet<Integer>(this.samplerate); // [percentSample] size set for random integers
 			
 			Random random = new Random();
 			
-			while (randomNumbers.size() < samplerate) // fill list
+			while (randomNumbers.size() < this.samplerate) // fill list
 				randomNumbers.add(random.nextInt(100)); // add a random integer 0 - 99
 			
 			String line;
@@ -412,7 +422,7 @@ public final class CreateQTree
 						tpoint = new Double[]{x, y, z};
 						this.is3d = true;
 					}
-					sample_dataset.put(pid, tpoint); // add {pid, x, y, z} to hashmap
+					this.sample_dataset.put(pid, tpoint); // add {pid, x, y, z} to hashmap
 				}
 			}
 		}
@@ -429,17 +439,17 @@ public final class CreateQTree
 		try
 		{
 			// local
-			outputTextFile = new Formatter("qtree.txt");
-			outputTextFile.format("%s", x);
-			outputObjectFile.writeObject(node);
+			this.outputTextFile = new Formatter("qtree.txt");
+			this.outputTextFile.format("%s", this.x);
+			this.outputObjectFile.writeObject(node);
 			
-			outputObjectFile.close();
-			outputTextFile.close();
-			fileout.close();
+			this.outputObjectFile.close();
+			this.outputTextFile.close();
+			this.fileout.close();
 			
 			// write to hdfs
 			FileSystem fs = FileSystem.get(new Configuration());
-			Path path = new Path(treeFilePath);
+			Path path = new Path(this.treeFilePath);
 			ObjectOutputStream outputStream = new ObjectOutputStream(fs.create(path));
 			outputStream.writeObject(node);
 			outputStream.close();
@@ -469,7 +479,7 @@ public final class CreateQTree
 		else if (this.is3d) // 3d
 			root = new Node(0.0, 0.0, 0.0, 1.0, 1.0, 1.0); // create root node
 		
-		for (int i : sample_dataset.keySet()) // add all sample points to root node
+		for (int i : this.sample_dataset.keySet()) // add all sample points to root node
 			root.addPoints(i);
 		
 		root = createQT(root); // create tree from root
@@ -478,7 +488,7 @@ public final class CreateQTree
 		
 		df_repr(root); // create tree string
 		
-		System.out.printf("number of cells: %d\n", numCells);
+		System.out.printf("number of cells: %d\n", this.numCells);
 		
 		writeFiles(root);
 	}
@@ -496,7 +506,7 @@ public final class CreateQTree
 		else if (this.is3d) // 3d
 			root = new Node(0.0, 0.0, 0.0, 1.0, 1.0, 1.0); // create root node
 		
-		for (int i : sample_dataset.keySet()) // add all sample points to root node
+		for (int i : this.sample_dataset.keySet()) // add all sample points to root node
 			root.addPoints(i);
 		
 		root = createQT(root, false); // create tree from root
@@ -505,7 +515,7 @@ public final class CreateQTree
 		
 		df_repr(root); // create tree string
 		
-		System.out.printf("number of cells: %d\n", numCells);
+		System.out.printf("number of cells: %d\n", this.numCells);
 		
 		writeFiles(root);
 	}
@@ -523,7 +533,7 @@ public final class CreateQTree
 		else if (this.is3d) // 3d
 			root1 = new Node(0.0, 0.0, 0.0, 1.0, 1.0, 1.0); // create root node
 		
-		for (int i : sample_dataset.keySet()) // add all sample points to root node
+		for (int i : this.sample_dataset.keySet()) // add all sample points to root node
 			root1.addPoints(i);
 		
 		// create initial tree from root, 'POSITIVE_INFINITY' is used to make the right OR statement 'false'
@@ -533,10 +543,10 @@ public final class CreateQTree
 		
 		double averageWidth = 0;
 		
-		for (double i : widths)
+		for (double i : this.widths)
 			averageWidth += i;
 		
-		averageWidth = averageWidth / widths.size();
+		averageWidth = averageWidth / this.widths.size();
 		
 		System.out.printf("average width: %11.10f\n", averageWidth);
 		
@@ -548,7 +558,7 @@ public final class CreateQTree
 		else if (this.is3d) // 3d
 			root2 = new Node(0.0, 0.0, 0.0, 1.0, 1.0, 1.0); // create root node
 		
-		for (int i : sample_dataset.keySet()) // add all sample points to root node
+		for (int i : this.sample_dataset.keySet()) // add all sample points to root node
 			root2.addPoints(i);
 		
 		root2 = createQT(root2, averageWidth); // create final tree from root and average width
@@ -557,7 +567,7 @@ public final class CreateQTree
 		
 		df_repr(root2); // create tree string
 		
-		System.out.printf("number of cells: %d\n", numCells);
+		System.out.printf("number of cells: %d\n", this.numCells);
 		
 		writeFiles(root2);
 	}

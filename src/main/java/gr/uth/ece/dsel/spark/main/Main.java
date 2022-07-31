@@ -87,6 +87,7 @@ public class Main
 	  	else if (partitioning.equals("qt"))
 	  		arguments += "sampletree=" + treeFileName + "\n";
 	    System.out.println("Input arguments: \n" + arguments);
+	    writeToFile(outputTextFile, arguments);
 	    
 	    // Spark conf
 	  	SparkConf sparkConf = new SparkConf().setAppName("aknn-spark-2d3d").setMaster(String.format("spark://%s:7077", nameNode)); //("local[*]");
@@ -349,6 +350,8 @@ public class Main
 		String finalMessage = String.format("%s-%s finished in %d millis\n", partitioning.toUpperCase(), method.toUpperCase(), System.currentTimeMillis() - t0);
 		System.out.println(finalMessage);
 		writeToFile(outputTextFile, finalMessage);
+		
+		outputTextFile.close();
 		
 	    jsc.close();
 	}

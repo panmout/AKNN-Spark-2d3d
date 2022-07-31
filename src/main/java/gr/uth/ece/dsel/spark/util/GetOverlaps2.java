@@ -8,7 +8,7 @@ import java.util.PriorityQueue;
 import org.apache.spark.api.java.function.Function;
 import scala.Tuple2;
 
-public final class GetOverlaps implements Function<Tuple2<String, ArrayList<Tuple2<Point, PriorityQueue<IdDist>>>>, ArrayList<Tuple2<String, Tuple2<Point, Boolean>>>>
+public final class GetOverlaps2 implements Function<Tuple2<String, ArrayList<Tuple2<Point, PriorityQueue<IdDist>>>>, ArrayList<Tuple2<String, Tuple2<Point, Boolean>>>>
 {
 	private final HashMap<String, Integer> cell_tpoints; // hashmap of training points per cell list from Phase 1 <cell_id, number of training points>
 	private String partitioning; // gd or qt
@@ -21,7 +21,7 @@ public final class GetOverlaps implements Function<Tuple2<String, ArrayList<Tupl
 	private boolean listComplete; // true/false if neighbors list is complete or not
 	private boolean is3d = false; // false = 2d, true = 3d
 	
-	public GetOverlaps (HashMap<String, Integer> cell_tpoints, int k, String partitioning)
+	public GetOverlaps2 (HashMap<String, Integer> cell_tpoints, int k, String partitioning)
 	{
 		this.cell_tpoints = cell_tpoints;
 		this.K = k;
@@ -189,7 +189,7 @@ public final class GetOverlaps implements Function<Tuple2<String, ArrayList<Tupl
     		zq = qpoint.getZ();
     		this.is3d = true;
     	}
-    	
+    	//System.out.println("qpoint = " + qpoint.getId());
     	// find query point cell
     	final double ds = 1.0 / this.N; // interval ds (cell width)
     	final int intQCell = Integer.parseInt(qcell); // get int value of query point cell
@@ -225,29 +225,20 @@ public final class GetOverlaps implements Function<Tuple2<String, ArrayList<Tupl
 		
 		for (int i = 0; i < this.N; i++) // filling sets
 		{
-			if (!this.is3d) // 2d case
+			for (int j = 0; j < this.N; j++)
 			{
-				south_row.add(i);
-				north_row.add((this.N - 1) * this.N + i);
-				west_column.add(i * this.N);
-				east_column.add(i * this.N + this.N - 1);
-			}
-			else // 3d case
-			{
-				for (int j = 0; j < this.N; j++)
-				{
-					// if 3d add j*N*N
-					south_row.add(i + j * zfloor);
-					north_row.add((this.N - 1) * this.N + i + j * zfloor);
-					west_column.add(i * this.N + j * zfloor);
-					east_column.add(i * this.N + this.N - 1 + j * zfloor);
-					
-					bottom_level.add(j * this.N + i);
-					top_level.add(j * this.N + i + (this.N - 1) * zfloor);
-				}
+				final int zfactor =  this.is3d ? j * zfloor : 0; // if 3d add j*N*N
+				
+				south_row.add(i + zfactor);
+				north_row.add((this.N - 1) * this.N + i + zfactor);
+				west_column.add(i * this.N + zfactor);
+				east_column.add(i * this.N + this.N - 1 + zfactor);
+				
+				bottom_level.add(j * this.N + i);
+				top_level.add(j * this.N + i + (this.N - 1) * zfloor);
 			}
 		}
-		
+				
 		// case 1: there are at least knn in this cell
 		if (num >= this.K && R <= ds)
 		{
@@ -302,7 +293,7 @@ public final class GetOverlaps implements Function<Tuple2<String, ArrayList<Tupl
 			
 			// 3d
 			if (this.is3d)
-			{
+			{				
 				// z-axis cells above
 				if (z + R > ds && !top_level.contains(intQCell)) // above cell, excluding top level
 				{
@@ -625,7 +616,7 @@ public final class GetOverlaps implements Function<Tuple2<String, ArrayList<Tupl
 						{
 							if (surrounding_cells.contains(jq * this.N + i)) // getting cells at query cell row (jq)
 							{
-								maxI = Math.max(i, maxI);
+								maxI = Math.max(i, maxI);	
 								minI = Math.min(i, minI);
 							}
 						}
@@ -1057,7 +1048,7 @@ public final class GetOverlaps implements Function<Tuple2<String, ArrayList<Tupl
 						overlaps_points += this.cell_tpoints.get(s); // add this overlap's training points
 				
 				R += 0.5 * ds; // increase radius by half ds
-				
+				//System.out.println("R = " + R);
 				// if k neighbors found, run loop one more time and increase radius by the diagonal of a cell
 				if (num + overlaps_points >= this.K)
 				{
@@ -1067,6 +1058,7 @@ public final class GetOverlaps implements Function<Tuple2<String, ArrayList<Tupl
 					else // 3d pythagorean
 						R += Math.sqrt(3) * ds;
 				}
+				//System.out.println("loopvar = " + loopvar);
 			} // end while (loopvar)
 		} // end case 2 else
 	} // end getOverlapsGD

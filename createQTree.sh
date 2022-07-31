@@ -2,12 +2,12 @@
 #                             PARAMETERS                                  #
 ###########################################################################
 
-nameNode=panagiotis-lubuntu
+nameNode=Hadoopmaster
 trainingDir=input
 treeDir=sampletree
-trainingDataset=NApppointNNew3d.txt
-samplerate=10
-capacity=10
+trainingDataset=paskrsNNew_obj_3d.txt
+samplerate=1
+capacity=200
 type=1 # 1 for simple capacity based quadtree, 2 for all children split method, 3 for average width method
 
 ###########################################################################
@@ -15,7 +15,7 @@ type=1 # 1 for simple capacity based quadtree, 2 for all children split method, 
 
 spark-submit \
 --class gr.uth.ece.dsel.spark.util.Qtree \
-./target/aknn3d-spark-0.0.1-SNAPSHOT.jar \
+./target/aknn-spark-2d3d-0.0.1-SNAPSHOT.jar \
 nameNode=$nameNode \
 trainingDir=$trainingDir \
 treeDir=$treeDir \
